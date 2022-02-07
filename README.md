@@ -176,48 +176,63 @@ STARTUP
 ```
 
 
-Sinon si pas READ WRITE -> ```sql ALTER DATABASE ORCLCDB OPEN READ WRITE;```
-
-
+Sinon si pas READ WRITE -> 
+```sql 
+ALTER DATABASE ORCLCDB OPEN READ WRITE;
+```
 voili voilou
 
-```sql ALTER PLUGGABLE DATABASE ORCLPDB1 OPEN READ WRITE;```
+```sql 
+ALTER PLUGGABLE DATABASE ORCLPDB1 OPEN READ WRITE;```
 
 ## 1.3
 bdd courante: 
 ```sql 
 SHOW con_name;
-``` "CDB$ROOT"
+```
+"CDB$ROOT"
 
 user courant: 
 ```sql 
 show user;
-``` "USER is 'SYS'"
+```
+"USER is 'SYS'"
 
 Nombre users: 
 ```sql 
 SELECT COUNT(*) FROM all_users;
-``` "35"
+``` 
+"35"
 
 ## 1.4
-```sql ALTER SESSION SET CONTAINER = ORCLPDB1;```
+```sql 
+ALTER SESSION SET CONTAINER = ORCLPDB1;
+```
 
 bdd courante: 
 ```sql 
 SHOW con_name;
-``` "ORCLPDB1"
+``` 
+"ORCLPDB1"
 
 user courant: 
 ```sql 
 show user;
-``` "USER is 'SYS'"
+``` 
+"USER is 'SYS'"
 
-Nombre users: ```sql SELECT COUNT(*) FROM all_users;``` "36"
+Nombre users: 
+```sql 
+SELECT COUNT(*) FROM all_users;
+``` 
+"36"
 
 Le nouveau utilisateur est "PDBADMIN"
 
 ## 1.5
-```sql ALTER USER pdbadmin IDENTIFIED BY sheep;```
+```sql 
+ALTER USER pdbadmin IDENTIFIED BY sheep;
+```
 
 dunno what to do
 
@@ -235,39 +250,51 @@ Set sys password:
 ALTER USER sys IDENTIFIED BY azerty;
 ```
 
-```sql CONNECT sys/azerty@//localhost:1521/orclpdb1 AS sysdba```
+```sql 
+CONNECT sys/azerty@//localhost:1521/orclpdb1 AS sysdba
+```
 
 bdd courante: 
 ```sql
 SHOW con_name;
-``` "ORCLPDB1"
+``` 
+"ORCLPDB1"
 
 user courant: 
 ```sql 
 show user;
-``` "USER is 'SYS'"
+``` 
+"USER is 'SYS'"
 
 Deuxième session
 
-```bash sqlplus pdbadmin/sheep@//localhost:1521/orclpdb1```
+```bash
+sqlplus pdbadmin/sheep@//localhost:1521/orclpdb1
+```
 
 bdd courante: 
 ```
 sql 
 SHOW con_name;
-``` "ORCLPDB1"
+```
+"ORCLPDB1"
 
 user courant: 
 ```sql 
 show user;
-``` "USER is 'PDBADMIN'"
+```
+"USER is 'PDBADMIN'"
 
 # 2
 # 2.7
-```sql SELECT username, command, status FROM V$SESSION WHERE (username = 'SYS' OR username = 'PDBADMIN');```
+```sql 
+SELECT username, command, status FROM V$SESSION WHERE (username = 'SYS' OR username = 'PDBADMIN');
+```
 
 # 2.8
-```sql SELECT username, command, status FROM V$SESSION WHERE (username = 'SYS' OR username = 'PDBADMIN');```
+```sql 
+SELECT username, command, status FROM V$SESSION WHERE (username = 'SYS' OR username = 'PDBADMIN');
+```
 
 
 
