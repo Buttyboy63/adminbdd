@@ -5,6 +5,9 @@ https://oracledba.blogspot.com/2019/09/rlwrap-and-auto-completion-in-sqlplus.htm
 ```bash
 alias sqlplus='rlwrap -f ~/sql.wordlist sqlplus'
 ```
+# config sqlplus
+set linesize 512
+column NAME format a32
 
 # TP1
 ## 5)
@@ -148,3 +151,65 @@ SELECT name,bytes FROM V$DATAFILE;
    5242880
 
 ```
+
+# TP2
+## 1.1
+```sql 
+select name,open_mode from v$pdbs;
+```
+```
+PDB$SEED MOUNTED
+
+ORCLPDB1 MOUNTED
+```
+## 1.2
+Avant de monter la pluggable DB il faut s'assurer que la BD conteneur est monté et ouvert en READ WRITE
+```sql select name,open_mode from V$DATABASE;```
+Si pas mounted -> ```sql STARTUP```
+Sinon si pas READ WRITE -> ```sql ALTER DATABASE ORCLCDB OPEN READ WRITE;```
+voili voilou
+
+```sql ALTER PLUGGABLE DATABASE ORCLPDB1 OPEN READ WRITE;```
+
+## 1.3
+bdd courante: ```sql SHOW con_name;``` "CDB$ROOT"
+user courant: ```sql show user;``` "USER is 'SYS'"
+Nombre users: ```sql SELECT COUNT(*) FROM all_users;``` "35"
+
+## 1.4
+```sql ALTER SESSION SET CONTAINER = ORCLPDB1;```
+bdd courante: ```sql SHOW con_name;``` "ORCLPDB1"
+user courant: ```sql show user;``` "USER is 'SYS'"
+Nombre users: ```sql SELECT COUNT(*) FROM all_users;``` "36"
+Le nouveau utilisateur est "PDBADMIN"
+
+## 1.5
+```sql ALTER USER pdbadmin IDENTIFIED BY sheep;```
+dunno what to do
+
+## 1.6
+Activate listener:
+	In oracle bash shell (#tmux second pane): ```bash $ORACLE_HOME/bin/lsnrctl```
+	In LSNRCTL shell: `START`
+Close anr re-open sqlplus: sqlplus / as sysdba
+
+Set sys password: ```sql ALTER USER sys IDENTIFIED BY azerty;```
+```sql CONNECT sys/azerty@//localhost:1521/orclpdb1 AS sysdba```
+
+bdd courante: ```sql SHOW con_name;``` "ORCLPDB1"
+user courant: ```sql show user;``` "USER is 'SYS'"
+
+Deuxième session
+```bash sqlplus pdbadmin/sheep@//localhost:1521/orclpdb1```
+bdd courante: ```sql SHOW con_name;``` "ORCLPDB1"
+user courant: ```sql show user;``` "USER is 'PDBADMIN'"
+
+# 2
+# 2.7
+```sql SELECT username, command, status FROM V$SESSION WHERE (username = 'SYS' OR username = 'PDBADMIN');```
+
+# 2.8
+```sql SELECT username, command, status FROM V$SESSION WHERE (username = 'SYS' OR username = 'PDBADMIN');```
+
+
+
