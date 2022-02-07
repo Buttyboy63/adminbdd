@@ -273,8 +273,7 @@ sqlplus pdbadmin/sheep@//localhost:1521/orclpdb1
 ```
 
 bdd courante: 
-```
-sql 
+```sql 
 SHOW con_name;
 ```
 "ORCLPDB1"
