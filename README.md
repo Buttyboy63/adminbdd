@@ -243,7 +243,7 @@ Activate listener:
 
 	In LSNRCTL shell: `START`
 
-Close anr re-open sqlplus: sqlplus / as sysdba
+Close and re-open sqlplus: sqlplus / as sysdba
 
 Set sys password: 
 ```sql 
@@ -296,4 +296,84 @@ SELECT username, command, status FROM V$SESSION WHERE (username = 'SYS' OR usern
 ```
 
 
+# TP3
+## 1
+### 1.1
+MDP sys: sheep
+```
+ALTER USER sys IDENTIFIED BY sheep;
+```
+### 1.2
+```
+select username,authentication_type from dba_users where username = 'SYS';
+
+USERNAME                         AUTHENTI
+-------------------------------- --------
+SYS                              PASSWORD
+```
+Pour éteindre l'instance:
+```
+SHUTDOWN immediate;
+Faire un rollback s'il se plaint d'une transaction en cours
+```
+### 1.3
+```bash
+rhdavies@vm-xx$ sqlplus sys/sheep AS sysdba
+SHOW user;
+	USER is "SYS"
+STARTUP NOMOUNT;
+	ORACLE instance started.
+
+	Total System Global Area  771747944 bytes
+	Fixed Size                  8900712 bytes
+	Variable Size             633339904 bytes
+	Database Buffers          121634816 bytes
+	Redo Buffers                7872512 bytes
+```
+### 1.4
+```
+SHOW PARAMETERS remote_login_passwordfile;
+	NAME                                 TYPE        VALUE
+	------------------------------------ ----------- ----------
+	remote_login_passwordfile            string      EXCLUSIVE
+
+ALTER SYSTEM SET remote_login_passwordfile = none SCOPE = spfile;
+Un show parameters montre que la modif n'a pas encore pris effet. -> redémarrer l'instance
+SHUTDOWN IMMEDIATE;
+
+```
+### 1.5
+```
+STARTUP NOMOUNT;
+	ORA-01031: insufficient privileges
+```
+
+### 1.6
+```
+oracle@vm-xx$ sqlplus sys/sheep as sysdba
+STARTUP NOMOUNT;
+
+Ca marche en passant par l'utilsateur oracle.
+```
+
+### 1.7
+```
+SHUTDOWN IMMEDIATE;
+
+rhdavies@vm-xx$ groups oracle
+
+sudo gpasswd -d oracle dba
+sudo gpasswd -d oracle oper
+groups oracle
+	oracle : oinstall backupdba dgdba kmdba racdba
+oracle@vm-xx$ sqlplus sys/sheep as sysdba
+STARTUP NOMOUNT;
+Ca ne marche pluuuuuuuuus! wow what a surprise....
+
+rhdavies@vm-xx$ sudo gpasswd -a oracle dba
+sudo gpasswd -a oracle oper
+
+(oracle) SQL> STARTUP NOMOUNT;
+wow ça marche!
+```
 
